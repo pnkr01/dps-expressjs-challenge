@@ -5,37 +5,36 @@ const router = Router();
 
 //create a report for a project whose id is passed in the request body.
 router.post('/', (req, res) => {
-	const { id, name, description } = req.body;
+	const { id, text, projectid } = req.body;
 	db.run(
-		'INSERT INTO projects (id, name, description) VALUES (@id, @name, @description)',
-		{ id, name, description },
+		'INSERT INTO reports (id, text, projectid) VALUES (@id, @text, @projectid)',
+		{ id, text, projectid },
 	);
-	res.status(201).send('Project created');
+	res.status(201).send('Report created');
 });
 
 //get all reports.
 router.get('/', (req, res) => {
-	const projects = db.query('SELECT * FROM projects');
-	res.status(200).json(projects);
+	const reports = db.query('SELECT * FROM reports');
+	res.status(200).json(reports);
 });
 
 //update a report by projectid.
-
 router.put('/:id', (req, res) => {
 	const { id } = req.params;
-	const { name, description } = req.body;
+	const { text, projectid } = req.body;
 	db.run(
-		'UPDATE projects SET name = @name, description = @description WHERE id = @id',
-		{ name, description, id },
+		'UPDATE reports SET text = @text, projectid = @projectid WHERE id = @id',
+		{ text, projectid, id },
 	);
-	res.status(200).send('Project updated');
+	res.status(200).send('Report updated');
 });
 
 //delete a report by projectid.
 router.delete('/:id', (req, res) => {
 	const { id } = req.params;
-	db.run('DELETE FROM projects WHERE id = @id', { id });
-	res.status(200).send('Project deleted');
+	db.run('DELETE FROM reports WHERE id = @id', { id });
+	res.status(200).send('Report deleted');
 });
 
 export default router;
