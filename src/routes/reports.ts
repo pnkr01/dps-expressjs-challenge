@@ -118,4 +118,23 @@ router.get('/project/:projectid', (req, res) => {
 	}
 });
 
+// Special endpoint to get reports with the same word appearing at least three times
+router.get('/special/reports', (req, res) => {
+	interface Report {
+		id: number;
+		text: string;
+		projectid: number;
+	}
+
+	const reports: Report[] = db.query('SELECT * FROM reports') as Report[];
+	const filteredReports = reports.filter((report: Report) => {
+		const wordCount: { [key: string]: number } = {};
+		report.text.split(' ').forEach((word: string) => {
+			wordCount[word] = (wordCount[word] || 0) + 1;
+		});
+		return Object.values(wordCount).some((count) => count >= 3);
+	});
+	res.status(200).json(filteredReports);
+});
+
 export default router;
